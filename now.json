@@ -1,6 +1,0 @@
-{
-    "cleanUrls": true,
-    "env": {
-        "DATABASE_URI": "@DATABASE_URI"
-    }
-}
