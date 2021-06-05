@@ -112,7 +112,6 @@ const App: FC = () => {
                         Upload CSV File
                     </Button>
                 </Upload>
-
                 <Table<Country>
                     columns={columns}
                     keyExtractor={(country) => country.id}

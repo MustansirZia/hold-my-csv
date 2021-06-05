@@ -132,7 +132,11 @@ const Table = <T extends Data>({
                     </Space>
                 </div>
             ),
-            filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            filterIcon: (filtered: boolean) => (
+                <SearchOutlined
+                    style={{ color: filtered || filters.some((filter) => filter.name === key) ? '#1890ff' : undefined }}
+                />
+            ),
             onFilterDropdownVisibleChange: (visible: boolean) => {
                 if (visible) {
                     setTimeout(() => searchInput.current?.select(), 100);
