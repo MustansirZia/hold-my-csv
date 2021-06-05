@@ -1,6 +1,0 @@
-{
-    "cleanUrls": true,
-    "env": {
-        "DATABASE_URI": "mongodb+srv://user:holdmycsv@holdmycsvcluster.w74bi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-    }
-}
