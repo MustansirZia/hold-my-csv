@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
-import uuid from 'node-uuid';
-import toJson from 'meanie-mongoose-to-json';
+import { v4 } from 'uuid';
+import toJson from '@meanie/mongoose-to-json';
 import { Country as CountryType } from '../../repository/types';
 
 const { Schema } = mongoose;
 
 const countrySchema = new Schema<CountryType>({
-    _id: { type: String, default: uuid.v4 },
+    _id: { type: String, default: v4 },
     name: { type: String, required: true },
     capital: { type: String, required: true },
     president: { type: String, required: true },
@@ -15,7 +15,7 @@ const countrySchema = new Schema<CountryType>({
     createdAt: { type: Date, default: Date.now },
 });
 
-// Adds "id" to documents using "_id" field.
+// Adds "id" to documents using "_id" field and removes the "_id" field.
 countrySchema.plugin(toJson);
 
 const Country: mongoose.Model<CountryType> =
