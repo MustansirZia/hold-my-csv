@@ -5,8 +5,9 @@ services:
         networks:
             - webnet
         environment:
-            MONGO_INITDB_ROOT_USERNAME: 'user'
-            MONGO_INITDB_ROOT_PASSWORD: 'password'
+            MONGO_INITDB_ROOT_USERNAME: user
+            MONGO_INITDB_ROOT_PASSWORD: password
+            MONGO_INITDB_DATABASE: HoldMyCSV
         deploy:
             restart_policy:
                 condition: on-failure
@@ -15,7 +16,7 @@ services:
     hold-my-csv:
         build: .
         ports:
-            - 3000:3000
+            - 80:3000
         networks:
             - webnet
         environment:

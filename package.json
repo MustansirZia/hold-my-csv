@@ -2,6 +2,15 @@
     "name": "hold-my-csv",
     "version": "0.0.1",
     "private": true,
+    "author": {
+        "name": "Mustansir Zia",
+        "url": "https://mustansir.dev",
+        "email": "mustansir29@hotmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MustansirZia/hold-my-csv"
+    },
     "scripts": {
         "dev": "next dev",
         "build": "next build",
@@ -9,7 +18,7 @@
     },
     "dependencies": {
         "antd": "4.16.1",
-        "busboy": "^0.3.1",
+        "busboy": "0.3.1",
         "csv": "5.5.0",
         "csv-parse": "4.15.4",
         "joi": "17.4.0",

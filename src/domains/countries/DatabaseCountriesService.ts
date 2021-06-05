@@ -1,15 +1,18 @@
 import mongoose from 'mongoose';
 import { Config } from '../config/types';
+import { Logger } from '../logger/types';
 import { Country as CountryType, FetchRequest, FetchResult } from '../repository/types';
 import Country from './models/Country';
 import { CountriesService } from './types';
 
 class DatabaseCountriesService implements CountriesService {
     private static connected = false;
+    private logger: Logger;
 
-    constructor(config: Config) {
+    constructor(config: Config, logger: Logger) {
+        this.logger = logger;
         if (!DatabaseCountriesService.connected) {
-            DatabaseCountriesService.connectToDatabase(config.get().DATABASE_URI);
+            this.connectToDatabase(config.get().DATABASE_URI);
         }
     }
 
@@ -51,9 +54,9 @@ class DatabaseCountriesService implements CountriesService {
         await Country.insertMany(countries);
     }
 
-    private static connectToDatabase(databaseUri: string) {
+    private connectToDatabase(databaseUri: string) {
         const db = mongoose.connection;
-        db.on('error', console.error.bind(console, '[Error] Could not connect to database!'));
+        db.on('error', (error) => this.logger.logError(error));
         db.once('open', () => {
             DatabaseCountriesService.connected = true;
         });

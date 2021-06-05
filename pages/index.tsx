@@ -1,6 +1,5 @@
-/* eslint-disable react/display-name */
 import { FC, useCallback, useMemo, useState } from 'react';
-import { Button, Upload, message } from 'antd';
+import { Button, Upload, message, Typography } from 'antd';
 import { DeleteFilled, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import Breadcrumbs from '../src/ui/components/Breadcrumbs';
 import Footer from '../src/ui/components/Footer';
@@ -10,6 +9,8 @@ import { Country, FetchRequest, FetchResult } from '../src/domains/repository/ty
 import Table, { TableColumn } from '../src/ui/components/Table';
 import Head from '../src/ui/components/Head';
 import { UploadChangeParam } from 'antd/lib/upload/interface';
+
+const { Title } = Typography;
 
 const INITIAL_DATA = { items: [], totalPages: 0 };
 
@@ -51,9 +52,9 @@ const App: FC = () => {
         name: 'file',
         action: '/api/countries/upload',
         accept: '.csv',
-        onChange(info: UploadChangeParam) {
+        async onChange(info: UploadChangeParam) {
             if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
+                await message.success(`${info.file.name} file uploaded successfully`, 2);
                 window.location.reload();
             } else if (info.file.status === 'error') {
                 message.error(`${info.file.name} file upload failed.`);
@@ -78,6 +79,7 @@ const App: FC = () => {
         try {
             await RepositoryProvider.provide().resetData();
             setResponse({ ...INITIAL_DATA });
+            message.success('Successfully nuked all data.');
         } catch (err) {
             message.error(`Failed to reset data. More info - ${err}`);
         } finally {
@@ -90,6 +92,7 @@ const App: FC = () => {
             <Head title="Hold My CSV" description="CSV parsing and table operations." />
             <Layout>
                 <Breadcrumbs />
+                <Title level={3}>Countries. (Bulk Upload via CSV)</Title>
                 <Button onClick={onReset} style={{ marginBottom: 10 }} icon={<DeleteFilled />}>
                     Nuke Data
                 </Button>
