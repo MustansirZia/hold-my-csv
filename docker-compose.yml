@@ -1,0 +1,30 @@
+version: '3.2'
+services:
+    database:
+        image: mongo:4.2.14
+        networks:
+            - webnet
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: 'user'
+            MONGO_INITDB_ROOT_PASSWORD: 'password'
+        deploy:
+            restart_policy:
+                condition: on-failure
+                max_attempts: 3
+
+    hold-my-csv:
+        build: .
+        ports:
+            - 3000:3000
+        networks:
+            - webnet
+        environment:
+            DATABASE_URI: mongodb://user:password@database/HoldMyCSV
+            PORT: 3000
+        deploy:
+            restart_policy:
+                condition: on-failure
+                max_attempts: 3
+
+networks:
+    webnet:
