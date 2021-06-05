@@ -109,7 +109,7 @@ const App: FC = () => {
                 </Button>
                 <Upload {...uploadProps}>
                     <Button icon={<UploadOutlined />} style={{ marginBottom: 10, marginLeft: 10 }}>
-                        Click to Upload CSV File
+                        Upload CSV File
                     </Button>
                 </Upload>
 
