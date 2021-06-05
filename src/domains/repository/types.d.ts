@@ -26,10 +26,6 @@ export interface Repository {
     resetData(): Promise<void>;
 }
 
-export interface UploadRepository {
-    uploadFile(): Promise<void>;
-}
-
 export type Country = {
     id: string;
     name: string;

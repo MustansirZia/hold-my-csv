@@ -1,23 +1,26 @@
-import { Data, FetchRequest, FetchResult, Repository, UploadRepository } from './types';
+import { Data, FetchRequest, FetchResult, Repository } from './types';
 
-class ApiRepository implements Repository, UploadRepository {
-    fetchData<T extends Data>(request: FetchRequest<T>): Promise<FetchResult<T>> {
-        return fetch('/api/countries', {
+class ApiRepository implements Repository {
+    async fetchData<T extends Data>(request: FetchRequest<T>): Promise<FetchResult<T>> {
+        const response = await fetch('/api/countries', {
             body: JSON.stringify(request),
             headers: {
                 'Content-Type': 'application/json',
             },
             method: 'post',
-        }).then((res) => res.json());
+        });
+        if (!response.ok) {
+            throw new Error(await response.text());
+        }
+        return (await response).json();
     }
     async resetData(): Promise<void> {
-        await fetch('/api/countries', {
+        const response = await fetch('/api/countries', {
             method: 'delete',
         });
-    }
-
-    uploadFile(): Promise<void> {
-        throw new Error('Method not implemented.');
+        if (!response.ok) {
+            throw new Error(await response.text());
+        }
     }
 }
 
