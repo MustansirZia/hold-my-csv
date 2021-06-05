@@ -33,6 +33,7 @@ export interface UploadRepository {
 export type Country = {
     id: string;
     name: string;
+    capital: string;
     population: number;
     nationalLanguage: string;
     president: string;

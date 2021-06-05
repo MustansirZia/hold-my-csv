@@ -27,6 +27,12 @@ const App: FC = () => {
                 searchable: true,
             },
             {
+                label: 'Capital',
+                key: 'capital',
+                sortable: true,
+                searchable: true,
+            },
+            {
                 label: 'President',
                 key: 'president',
                 sortable: true,

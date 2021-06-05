@@ -25,6 +25,7 @@ class DatabaseCountriesService implements CountriesService {
             query = query.find({
                 $or: [
                     { name: { $regex: request.searchString.trim(), $options: 'i' } },
+                    { capital: { $regex: request.searchString.trim(), $options: 'i' } },
                     { nationalLanguage: { $regex: request.searchString.trim(), $options: 'i' } },
                     { president: { $regex: request.searchString.trim(), $options: 'i' } },
                 ],

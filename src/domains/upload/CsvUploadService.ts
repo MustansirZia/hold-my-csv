@@ -3,13 +3,13 @@ import { UploadService } from './types';
 import { Readable } from 'stream';
 import { Country } from '../repository/types';
 
-const columns = ['Name', 'President', 'National Language', 'Population'];
+const columns = ['Name', 'Capital', 'President', 'National Language', 'Population'];
 
 class CsvUploadService implements UploadService {
     getFileFormat(): Readable {
         let string = `${columns.join(',')}\n`;
         new Array(20).fill(null).forEach(() => {
-            string += ',,,\n';
+            string += ',,,,\n';
         });
         return Readable.from([string]);
     }
@@ -25,6 +25,7 @@ class CsvUploadService implements UploadService {
                         records
                             .map((record: Record<string, string>) => ({
                                 name: record.Name,
+                                capital: record.Capital,
                                 president: record.President,
                                 nationalLanguage: record['National Language'],
                                 population: +record.Population,
@@ -32,6 +33,7 @@ class CsvUploadService implements UploadService {
                             .filter(
                                 (country: Country) =>
                                     !!country.name &&
+                                    !!country.capital &&
                                     !!country.president &&
                                     !!country.nationalLanguage &&
                                     !!country.population,
