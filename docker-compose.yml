@@ -5,9 +5,8 @@ services:
         networks:
             - webnet
         environment:
-            MONGO_INITDB_ROOT_USERNAME: user
-            MONGO_INITDB_ROOT_PASSWORD: password
-            MONGO_INITDB_DATABASE: HoldMyCSV
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: password123
         deploy:
             restart_policy:
                 condition: on-failure
@@ -20,7 +19,7 @@ services:
         networks:
             - webnet
         environment:
-            DATABASE_URI: mongodb://user:password@database/HoldMyCSV
+            DATABASE_URI: mongodb://root:password123@database/admin
             PORT: 3000
         deploy:
             restart_policy:
