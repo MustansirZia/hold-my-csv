@@ -1,5 +1,6 @@
 {
     "name": "hold-my-csv",
+    "description": "Hold my CSV - Tabular Data with Bulk Upload.",
     "version": "0.0.1",
     "private": true,
     "author": {
