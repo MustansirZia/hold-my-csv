@@ -2,7 +2,7 @@
 
 > Hold my CSV - Tabular Data with Bulk Upload.
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a full stack [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Prerequisites
 
@@ -52,3 +52,7 @@ Support for linting via Eslint and formatting via Prettier added with sensible d
 The easiest way to deploy this app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2FMustansirZia%2Fhold-my-csv&env=DATABASE_URI&envDescription=Database%20connection%20string%20for%20mongodb.)
+
+### Running Tests
+
+To run unit tests run `yarn test`. For now, test cases for the UI have only been added.
