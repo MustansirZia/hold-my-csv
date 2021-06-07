@@ -3,6 +3,11 @@ import { cleanup } from '@testing-library/react';
 
 afterEach(cleanup);
 
+beforeEach(() => {
+    jest.resetModules();
+    jest.useFakeTimers();
+});
+
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({

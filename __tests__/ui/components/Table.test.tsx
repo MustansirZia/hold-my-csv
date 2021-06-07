@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { render, screen } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { Country } from '../../../src/domains/repository/types';
 import Table, { TableColumn } from '../../../src/ui/components/Table';
 
@@ -130,21 +130,125 @@ const columns: Array<TableColumn<Country>> = [
     },
 ];
 
+const itemsInPage = 5;
+
 describe('Table', () => {
-    it('renders all rows', () => {
+    const setup = (onRefetch = jest.fn()) =>
         render(
             <Table<Country>
                 columns={columns}
-                result={{ items: countries.slice(0, 5), totalPages: 3 }}
+                result={{ items: countries.slice(0, itemsInPage), totalPages: 3 }}
                 loading={false}
-                defaultItemsInPage={5}
-                itemsInPageOptions={[5, 10, 20]}
+                defaultItemsInPage={itemsInPage}
+                itemsInPageOptions={[itemsInPage, itemsInPage * 2, itemsInPage * 4]}
                 keyExtractor={(country) => country.id}
-                onRefetch={() => {
-                    // pass
-                }}
+                onRefetch={onRefetch}
             />,
         );
-        expect(document.querySelectorAll('tr')).toHaveLength(6);
+
+    it('Renders all rows and columns', () => {
+        setup();
+
+        expect(document.querySelectorAll('th')).toHaveLength(columns.length);
+        // +1 for the head.
+        expect(document.querySelectorAll('tr')).toHaveLength(itemsInPage + 1);
+        expect(document.querySelectorAll('td')).toHaveLength(itemsInPage * columns.length);
+
+        const cells = document.querySelectorAll('td');
+
+        // Checking each cell.
+        for (const index in countries.slice(0, itemsInPage)) {
+            const { name, president, capital, nationalLanguage, population } = countries[index];
+            // Checking if the value is rendered correctly and at the correct place.
+            expect(cells[+index * itemsInPage]).toHaveTextContent(name);
+            expect(cells[+index * itemsInPage + 1]).toHaveTextContent(capital);
+            expect(cells[+index * itemsInPage + 2]).toHaveTextContent(president);
+            expect(cells[+index * itemsInPage + 3]).toHaveTextContent(nationalLanguage);
+            expect(cells[+index * itemsInPage + 4]).toHaveTextContent(population.toString());
+        }
+    });
+
+    it('Renders search controls properly', () => {
+        const { queryAllByLabelText } = setup();
+        // +1 for the global search.
+        expect(queryAllByLabelText('search')).toHaveLength(columns.filter((column) => column.searchable).length + 1);
+    });
+
+    it('Renders sort controls properly', () => {
+        const { queryAllByLabelText } = setup();
+        expect(queryAllByLabelText('caret-up')).toHaveLength(columns.filter((column) => column.sortable).length);
+        expect(queryAllByLabelText('caret-down')).toHaveLength(columns.filter((column) => column.sortable).length);
+    });
+
+    it('Works with global search', () => {
+        const placeholderText = 'Search across table';
+        const searchString = 'UK';
+        const onRefetch = jest.fn();
+        const { queryByPlaceholderText, getByPlaceholderText } = setup(onRefetch);
+        expect(queryByPlaceholderText(placeholderText)).toBeInTheDocument();
+        fireEvent.change(getByPlaceholderText(placeholderText), { target: { value: searchString } });
+        // Waiting for debounce to end.
+        jest.runAllTimers();
+        expect(onRefetch).toHaveBeenCalledTimes(1);
+        expect(onRefetch).toHaveBeenCalledWith({ itemsInPage, currentPage: 0, searchString, filters: [] });
+    });
+
+    it('Works with sorting', () => {
+        const onRefetch = jest.fn();
+        setup(onRefetch);
+        const heads = document.querySelectorAll('th');
+        // Sort ascending for 2nd column.
+        fireEvent.click(heads[1]);
+        // Now sort descending for 3rd column.
+        fireEvent.click(heads[2]);
+        fireEvent.click(heads[2]);
+        // Waiting for debounce to end.
+        jest.runAllTimers();
+        expect(onRefetch).toHaveBeenCalledTimes(1);
+        expect(onRefetch).toHaveBeenCalledWith({
+            itemsInPage,
+            currentPage: 0,
+            searchString: '',
+            sortedVia: 'president',
+            sortOrder: 'desc',
+            filters: [],
+        });
+    });
+
+    it('Works with column search', async () => {
+        const itemsInPage = 5;
+        const onRefetch = jest.fn();
+        const { getAllByLabelText, getByPlaceholderText, getByText, getAllByText } = setup(onRefetch);
+        const searchIcons = getAllByLabelText('search');
+        // Search using 2nd column.
+        fireEvent.click(searchIcons[2]);
+        fireEvent.change(getByPlaceholderText('Search for Capital'), { target: { value: 'London' } });
+        fireEvent.click(getByText('Search'));
+        // Search using 3rd column as well.
+        fireEvent.click(searchIcons[3]);
+        fireEvent.change(getByPlaceholderText('Search for President'), { target: { value: 'Boris' } });
+        fireEvent.click(getAllByText('Search')[1]);
+        // Search using 3rd column as well but cancel midway.
+        fireEvent.click(searchIcons[4]);
+        fireEvent.change(getByPlaceholderText('Search for National Language'), { target: { value: 'English' } });
+        fireEvent.click(getAllByText('Reset')[2]);
+        // Waiting for debounce to end.
+        jest.runAllTimers();
+        expect(onRefetch).toHaveBeenCalledTimes(1);
+        expect(onRefetch).toHaveBeenCalledWith({
+            itemsInPage,
+            currentPage: 0,
+            searchString: '',
+            filters: [
+                {
+                    name: 'capital',
+                    searchString: 'London',
+                },
+                {
+                    name: 'president',
+                    searchString: 'Boris',
+                },
+            ],
+        });
     });
 });
