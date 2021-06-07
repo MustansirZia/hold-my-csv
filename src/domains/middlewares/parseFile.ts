@@ -6,7 +6,7 @@ type NextApiRequestWithFile = NextApiRequest & {
 };
 
 const parseFile = (req: NextApiRequestWithFile, res: NextApiResponse<{ message: string }>): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const busboy = new BusBoy({ headers: req.headers });
         busboy.on('file', (_, f) => {
             req.file = f;
@@ -14,7 +14,7 @@ const parseFile = (req: NextApiRequestWithFile, res: NextApiResponse<{ message: 
         });
         busboy.on('error', () => {
             res.status(400).json({ message: 'Invalid file.' });
-            reject(false);
+            resolve(false);
         });
         req.pipe(busboy);
     });
