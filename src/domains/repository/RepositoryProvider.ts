@@ -1,7 +1,6 @@
 import ApiRepository from './ApiRepository';
-import { Repository, UploadRepository } from './types';
+import { Repository } from './types';
 
 export default {
     provide: (): Repository => new ApiRepository(),
-    provideUploadRepository: (): UploadRepository => new ApiRepository(),
 };
